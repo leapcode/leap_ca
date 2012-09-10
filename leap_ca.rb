@@ -5,10 +5,12 @@ require 'yajl/http_stream'
 require 'lib/couch_stream'
 require 'lib/couch_changes'
 
+# TODO: read the connection from a config
+SERVER = "http://localhost:5984"
+DATABASE = "salticidae_certs" 
 
 def main
-# TODO: read the connection from a config
-  couch = CouchStream.new("http://localhost:5984/", "salticidae_certs")
+  couch = CouchStream.new(SERVER, DATABASE)
   changes = CouchChanges.new(couch)
   changes.follow do |hash|
     p hash
