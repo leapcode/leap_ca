@@ -15,6 +15,9 @@ class Cert < CouchRest::Model::Base
 
   validates :zipped, :presence => true
 
+  design do
+  end
+
   def set_random
     self.random = rand
   end
