@@ -10,9 +10,9 @@ end
 class CouchStreamTest < MiniTest::Unit::TestCase
 
   def setup
-    @config = stub(:server => "http://server", :database => "database")
-    @stream = CouchStream.new(@config)
-    @url = "http://server/database/_changes?c=d&a=b"
+    @root = "http://server/database"
+    @stream = CouchStream.new(@root)
+    @url = @root + "/_changes?a=b&c=d"
     @path = "_changes"
     @options = {:a => :b, :c => :d}
   end
