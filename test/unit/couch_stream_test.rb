@@ -10,7 +10,8 @@ end
 class CouchStreamTest < MiniTest::Unit::TestCase
 
   def setup
-    @stream = CouchStream.new("http://server/", "database")
+    @config = stub(:server => "http://server", :database => "database")
+    @stream = CouchStream.new(@config)
     @url = "http://server/database/_changes?c=d&a=b"
     @path = "_changes"
     @options = {:a => :b, :c => :d}
@@ -30,5 +31,5 @@ class CouchStreamTest < MiniTest::Unit::TestCase
     assert_equal "http://server/database/", @stream.send(:url_for, "")
     assert_equal @url, @stream.send(:url_for, @path, @options)
   end
-    
+
 end

@@ -1,7 +1,6 @@
 class CouchStream
-  def initialize(server, db)
-    @server = server
-    @db = db
+  def initialize(config)
+    @config = config
   end
 
   def get(path, options)
@@ -11,11 +10,11 @@ class CouchStream
       yield(hash)
     end
   end
-  
+
   protected
 
   def url_for(path, options = {})
-    url = @server + @db + '/' + path
+    url = [@config.server, @config.database, path].join('/')
     url += '?' if options.any?
     url += options.map {|k,v| "#{k}=#{v}"}.join('&')
   end

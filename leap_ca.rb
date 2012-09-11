@@ -2,15 +2,15 @@
 
 require 'rubygems'
 require 'yajl/http_stream'
+require 'lib/config'
 require 'lib/couch_stream'
 require 'lib/couch_changes'
 
-# TODO: read the connection from a config
-SERVER = "http://localhost:5984"
-DATABASE = "salticidae_certs" 
 
 def main
-  couch = CouchStream.new(SERVER, DATABASE)
+  config = LeapCA::Config.new(File.expand_path("../config.yml", __FILE__))
+  p "Tracking #{config.database} on #{config.server}"
+  couch = CouchStream.new(config)
   changes = CouchChanges.new(couch)
   changes.follow do |hash|
     p hash
