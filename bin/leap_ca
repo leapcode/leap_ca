@@ -1,19 +1,17 @@
 #!/usr/bin/ruby
+LEAP_CA_ROOT = File.expand_path('../..', __FILE__)
+$:.unshift File.expand_path('lib', LEAP_CA_ROOT)
 
 require 'rubygems'
 require 'daemons'
 require 'yajl/http_stream'
 
-require 'lib/cert'
-require 'lib/couch_stream'
-require 'lib/couch_changes'
-require 'lib/pool'
-
+require 'leap_ca'
 
 puts "Tracking #{Cert.database.root}"
 couch = CouchStream.new(Cert.database.root)
 changes = CouchChanges.new(couch)
-pool = LeapCA::Pool.new(File.expand_path("../config/pool.yml", __FILE__))
+pool = LeapCA::Pool.new(File.expand_path("config/pool.yml", LEAP_CA_ROOT))
 pool.fill
 Daemons.run_proc('leap_ca.rb') do
   changes.follow do |hash|
