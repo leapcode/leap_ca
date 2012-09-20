@@ -1,0 +1,23 @@
+require "bundler/capistrano"
+
+set :application, "leap_ca"
+
+set :scm, :git
+set :repository,  "git://leap.se/leap_ca"
+
+role :app, "YOUR SERVER GOES HERE"
+
+# if you want to clean up old releases on each deploy uncomment this:
+# after "deploy:restart", "deploy:cleanup"
+
+namespace :deploy do
+  task :start, :roles => :app do
+    run "#{File.join(current_path,'bin','leap_ca')} start"
+  end
+  task :stop, :roles => :app do
+    run "#{File.join(current_path,'bin','leap_ca')} stop"
+  end
+  task :restart, :roles => :app, :except => { :no_release => true } do
+    run "#{File.join(current_path,'bin','leap_ca')} restart"
+  end
+end
