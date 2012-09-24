@@ -13,7 +13,7 @@ class Cert < CouchRest::Model::Base
   validates :random, :presence => true,
     :numericality => {:greater_than => 0, :less_than => 1}
 
-  validates :zipped, :presence => true
+  validates :zip_attachment, :presence => true
 
   design do
   end
@@ -23,15 +23,20 @@ class Cert < CouchRest::Model::Base
   end
 
   def attach_zip
-    self.create_attachment :file => StringIO.new("dummy cert"), :name => zipname
+    file = File.open File.join(LEAP_CA_ROOT, "config", "cert")
+    self.create_attachment :file => file, :name => zipname
   end
 
   def zipname
-    'cert.zip'
+    'cert.txt'
+  end
+
+  def zip_attachment
+    attachments[zipname]
   end
 
   def zipped
-    attachments[zipname]
+    read_attachment(zipname)
   end
 
 end
