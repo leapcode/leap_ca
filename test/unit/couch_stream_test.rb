@@ -1,5 +1,5 @@
-require 'test_helper'
-require 'lib/couch_stream'
+require File.expand_path('../../test_helper.rb', __FILE__)
+require 'leap_ca/couch_stream'
 
 # we'll mock this
 module Yajl
@@ -11,7 +11,7 @@ class CouchStreamTest < MiniTest::Unit::TestCase
 
   def setup
     @root = "http://server/database"
-    @stream = CouchStream.new(@root)
+    @stream = LeapCA::CouchStream.new(@root)
     @url = @root + "/_changes?a=b&c=d"
     @path = "_changes"
     @options = {:a => :b, :c => :d}

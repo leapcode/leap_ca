@@ -1,5 +1,5 @@
-require 'test_helper'
-require 'lib/couch_changes'
+require File.expand_path('../../test_helper.rb', __FILE__)
+require 'leap_ca/couch_changes'
 
 class CouchChangesTest < MiniTest::Unit::TestCase
 
@@ -7,7 +7,7 @@ class CouchChangesTest < MiniTest::Unit::TestCase
 
   def setup
     @stream = mock()
-    @changes = CouchChanges.new(@stream)
+    @changes = LeapCA::CouchChanges.new(@stream)
   end
 
   def test_last_seq

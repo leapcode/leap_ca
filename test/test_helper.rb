@@ -1,6 +1,10 @@
 require 'rubygems'
 require 'minitest/autorun'
-LEAP_CA_ROOT = File.expand_path('../..', __FILE__)
-$:.unshift File.expand_path('lib', LEAP_CA_ROOT)
 
-require 'mocha'
+BASE_DIR = File.expand_path('../..', __FILE__)
+$:.unshift File.expand_path('lib', BASE_DIR)
+
+require 'mocha/setup'
+
+LEAP_CA_CONFIG = "test/config/config.yaml"
+require 'leap_ca'

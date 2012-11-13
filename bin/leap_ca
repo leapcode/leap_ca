@@ -1,23 +1,51 @@
 #!/usr/bin/ruby
-LEAP_CA_ROOT = File.expand_path('../..', __FILE__)
-$:.unshift File.expand_path('lib', LEAP_CA_ROOT)
 
-require 'rubygems'
-require 'daemons'
-require 'yajl/http_stream'
+#
+# LEAP Client Certificate Generation Daemon
+#
 
-require 'leap_ca'
+BASE_DIR = File.expand_path('../..', File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__)
 
-puts "Tracking #{Cert.database.root}"
-couch = CouchStream.new(Cert.database.root)
-changes = CouchChanges.new(couch)
-pool = LeapCA::Pool.new(File.expand_path("config/pool.yml", LEAP_CA_ROOT))
-pool.fill
-Daemons.run_proc('leap_ca.rb') do
-  changes.follow do |hash|
-    p hash
-    if hash[:deleted]
-      pool.fill
-    end
+begin
+  #
+  # try without rubygems (might be already loaded or not present)
+  #
+  require 'leap_ca/version'
+rescue LoadError
+  #
+  # try with rubygems
+  #
+  require "#{BASE_DIR}/lib/leap_ca/version.rb"
+  LeapCA::REQUIRE_PATHS.each do |path|
+    path = File.expand_path(path, BASE_DIR)
+    $LOAD_PATH.unshift path unless $LOAD_PATH.include?(path)
   end
+  require 'rubygems'
+  require 'leap_ca/version'
 end
+
+# Graceful Ctrl-C
+Signal.trap("SIGINT") do
+  puts "\nQuit"
+  exit
+end
+
+# this changes later, so save the initial current directory
+CWD = Dir.pwd
+
+# handle --version ourselves
+if ARGV.grep(/--version/).any?
+  puts "leap_ca #{LeapCA::VERSION}, ruby #{RUBY_VERSION}"
+  exit(0)
+end
+
+#
+# Start the daemon
+#
+require 'daemons'
+if ENV["USER"] == "root"
+  options = {:app_name => 'leap_ca', :dir_mode => :system}  # this will put the pid file in /var/run
+else
+  options = {:app_name => 'leap_ca', :dir_mode => :normal, :dir => '/tmp'} # this will put the pid file in /tmp
+end
+Daemons.run("#{BASE_DIR}/lib/leap_ca_daemon.rb", options)

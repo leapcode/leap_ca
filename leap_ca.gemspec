@@ -9,18 +9,20 @@ Gem::Specification.new do |s|
   s.version     = LeapCA::VERSION
   s.authors     = ["Azul"]
   s.email       = ["azul@leap.se"]
-  s.homepage    = "http://www.leap.se"
-  s.summary     = "CA deamon for the leap platform"
-  s.description = "This deamon refills the pool of client certs for the leap platform. They are stored in a CouchDB instance and can be handed out with a webservice."
+  s.homepage    = "https://leap.se"
+  s.summary     = "Certificate Authority deamon for the LEAP Platform"
+  s.description = "Provides the executable leap_ca, a deamon that refills a pool of x509 client certs stored in CouchDB."
 
-  s.files = Dir["{config,lib}/**/*", 'bin/*'] + ["Rakefile", "Readme.md"]
+  s.files = Dir["{config,lib}/**/*", 'bin/*'] + ["Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
+  s.bindir = 'bin'
+  s.executables << 'leap_ca'
 
   s.add_dependency "couchrest", "~> 1.1.3"
   s.add_dependency "couchrest_model", "~> 2.0.0.beta2"
   s.add_dependency "daemons"
   s.add_dependency "yajl-ruby"
+  s.add_dependency "certificate_authority"
   s.add_development_dependency "minitest", "~> 3.2.0"
   s.add_development_dependency "mocha"
-
 end

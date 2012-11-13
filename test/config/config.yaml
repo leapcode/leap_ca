@@ -1,0 +1,20 @@
+#
+# testing configuration options
+#
+
+#
+# Certificate Authority
+#
+ca_key_path: "./test/files/ca.key"
+ca_key_password: ~
+ca_cert_path: "./test/files/ca.crt"
+
+#
+# Certificate pool
+#
+max_pool_size: 4
+client_cert_lifespan: 1
+client_cert_bit_size: 1024
+client_cert_hash: "SHA1"
+
+db_name: "client_certificates_test"

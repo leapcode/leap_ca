@@ -1,50 +1,32 @@
-require 'test_helper'
-require 'leap_ca/cert'
+require File.expand_path('../../test_helper.rb', __FILE__)
 
 class CertTest < MiniTest::Unit::TestCase
 
   def setup
-    @sample = Cert.new
-    @sample.set_random
-    @sample.attach_zip
+    @cert = LeapCA::Cert.new
   end
 
-  def test_certs_come_with_attachments
-    assert @sample.has_attachment? "cert.txt"
-  end
+  def test_generate
+    @cert.generate
 
-  def test_zipper_returns_zip_attachement
-    assert_equal "text/plain", @sample.zip_attachment["content_type"]
-  end
+    assert @cert.cert, 'certificate should exist'
+    assert @cert.key, 'key should exist'
 
-  def test_zipname_returns_name_of_zip_file
-    assert_equal "cert.txt", @sample.zipname
-  end
+    ca   = OpenSSL::X509::Certificate.new(File.read(LeapCA::Config.ca_cert_path))
+    cert = OpenSSL::X509::Certificate.new(@cert.cert)
+    key  = OpenSSL::PKey::RSA.new(@cert.key)
 
-  def test_test_data
-    assert @sample.valid?
-  end
-
-  def test_zipped_returns_actual_data
-    @sample.save # This is required!
-    lines = @sample.zipped.split("\n")
-    assert_equal 56, lines.count
-    assert_equal "-----BEGIN RSA PRIVATE KEY-----", lines.first.chomp
-    assert_equal "-----END CERTIFICATE-----", lines.last.chomp
+    assert cert.verify(ca.public_key), "cert was not signed by CA"
+    assert_equal ca.subject.to_s, cert.issuer.to_s, 'issuer should match'
+    assert_equal "test", cert.public_key.public_decrypt(key.private_encrypt("test")), 'keypair should be able to encrypt/decrypt'
   end
 
   def test_validation_of_random
-    @sample.stubs(:set_random)
-    [0, 1, nil, "asdf"].each do |invalid|
-      @sample.random = invalid
-      assert !@sample.valid?, "#{invalid} should not be a valid value for random"
+    @cert.stubs(:set_random)
+    [1, nil, "asdf"].each do |invalid|
+      @cert.random = invalid
+      assert !@cert.valid?, "#{invalid} should not be a valid value for random"
     end
-  end
-
-  def test_validation_of_attachement
-    @sample.stubs(:attach_zip)
-    @sample.delete_attachment(@sample.zipname)
-    assert !@sample.valid?, "Cert should require zipped attachment"
   end
 
 end

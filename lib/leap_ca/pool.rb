@@ -2,18 +2,19 @@ require 'yaml'
 
 module LeapCA
   class Pool
-    def initialize(filename)
-      @config = YAML.load(File.open(filename, 'r'))
+    def initialize(config = {:size => 10})
+      @config = config
     end
 
     def fill
       while Cert.count < self.size do
-        Cert.create!
+        cert = Cert.create!
+        puts " * Created client certificate #{cert.id}"
       end
     end
 
     def size
-      @config[:size] ||= 10
+      @config[:size]
     end
   end
 end
