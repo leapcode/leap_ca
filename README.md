@@ -103,6 +103,15 @@ Rake Tasks
     rake test       # Run tests
     rake uninstall  # Uninstall leap_ca-x.x.x.gem from either system-wide or user gems
 
+Development
+--------------------
+
+For development and debugging you might want to run the programm directly without
+the deamon wrapper. You can do this like this:
+
+    ruby -I lib lib/leap_ca_daemon.rb
+
+
 Todo
 ----------------------------
 

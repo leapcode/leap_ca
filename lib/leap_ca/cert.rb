@@ -29,6 +29,7 @@ module LeapCA
     before_validation :generate, :set_random, :on => :create
 
     design do
+      view :by_random
     end
 
     #
