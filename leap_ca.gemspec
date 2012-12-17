@@ -25,4 +25,5 @@ Gem::Specification.new do |s|
   s.add_dependency "certificate_authority"
   s.add_development_dependency "minitest", "~> 3.2.0"
   s.add_development_dependency "mocha"
+  s.add_development_dependency "rake"
 end
