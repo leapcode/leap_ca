@@ -42,9 +42,9 @@ module LeapCA
       cert.subject.common_name = random_common_name
 
       # set expiration
-      self.valid_until = months_from_today(Config.client_cert_lifespan)
-      cert.not_before = today
-      cert.not_after  = self.valid_until
+      self.valid_until = months_from_yesterday(Config.client_cert_lifespan)
+      cert.not_before  = yesterday
+      cert.not_after   = self.valid_until
 
       # generate key
       cert.serial_number.number = cert_serial_number
@@ -92,28 +92,37 @@ module LeapCA
       cert_serial_number.to_s(36)
     end
 
-    def today
-      t = Time.now
-      Time.utc t.year, t.month, t.day
-    end
-
-    def months_from_today(num)
-      date = Date.today >> num  # >> is months in the future operator
-      Time.utc date.year, date.month, date.day
-    end
-
     def client_signing_profile
       {
         "digest" => Config.client_cert_hash,
         "extensions" => {
           "keyUsage" => {
-            "usage" => ["digitalSignature", "keyAgreement"]
+            "usage" => ["digitalSignature"]
           },
           "extendedKeyUsage" => {
             "usage" => ["clientAuth"]
           }
         }
       }
+    end
+
+    ##
+    ## TIME HELPERS
+    ##
+    ## note: we use 'yesterday' instead of 'today', because times are in UTC, and some people on the planet
+    ## are behind UTC.
+    ##
+
+    def yesterday
+      t = Time.now - 24*24*60
+      Time.utc t.year, t.month, t.day
+    end
+
+    def months_from_yesterday(num)
+      t = yesterday
+      date = Date.new t.year, t.month, t.day
+      date = date >> num  # >> is months in the future operator
+      Time.utc date.year, date.month, date.day
     end
 
   end
