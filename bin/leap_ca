@@ -39,6 +39,14 @@ if ARGV.grep(/--version/).any?
   exit(0)
 end
 
+# --fill-pool will fill the pool and then exit
+if ARGV.grep(/--fill-pool/).any?
+  require 'leap_ca'
+  pool = LeapCA::Pool.new(:size => LeapCA::Config.max_pool_size)
+  pool.fill
+  exit(0)
+end
+
 #
 # Start the daemon
 #
