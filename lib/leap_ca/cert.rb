@@ -32,6 +32,22 @@ module LeapCA
       view :by_random
     end
 
+    class << self
+      def sample
+        self.by_random.startkey(rand).first || self.by_random.first
+      end
+
+      def pick_from_pool
+        cert = self.sample
+        raise RECORD_NOT_FOUND unless cert
+        cert.destroy
+        return cert
+      rescue RESOURCE_NOT_FOUND
+        retry if self.by_random.count > 0
+        raise RECORD_NOT_FOUND
+      end
+    end
+
     #
     # generate the private key and client certificate
     #
