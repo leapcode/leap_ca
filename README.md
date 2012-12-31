@@ -1,7 +1,7 @@
 LEAP Certificate Authority Daemon
 ---------------------------------------------------
 
-``leap_ca`` is a background daemon that generates x509 certificates as needed and stores them in CouchDB. You can run ``leap_ca`` on a machine that is not connected to a network, and then periodically connect to sync up the cert database.
+``leap_ca_daemon`` is a background daemon that generates x509 certificates as needed and stores them in CouchDB. You can run ``leap_ca`` on a machine that is not connected to a network, and then periodically connect to sync up the cert database.
 
 * Its only interface with the outside world is a CouchDB connection (defaults to localhost).
 * The daemon monitors changes to the database and fills it with x509 certs as needed.
@@ -39,20 +39,20 @@ Running
 
 See if it worked:
 
-    leap_ca run -- test/config/config.yaml
+    leap_ca_daemon run -- test/config/config.yaml
     browse to http://localhost:5984/_utils
 
 How you would run normally in production mode:
 
-    leap_ca start
-    leap_ca stop
+    leap_ca_daemon start
+    leap_ca_daemon stop
 
-See ``leap_ca --help`` for more options.
+See ``leap_ca_daemon --help`` for more options.
 
 Configuration
 ---------------------
 
-``leap_ca`` reads the following configurations files, in this order:
+``leap_ca_daemon`` reads the following configurations files, in this order:
 
 * ``$(leap_ca_source)/config/default_config.yaml``
 * ``/etc/leap/leap_ca.yaml``
