@@ -37,7 +37,11 @@ From gem:
 Running
 --------------------
 
-See if it worked:
+Run once:
+
+    leap_ca_daemon --run-once
+
+Run in foreground to see if it works:
 
     leap_ca_daemon run -- test/config/config.yaml
     browse to http://localhost:5984/_utils

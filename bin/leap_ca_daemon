@@ -40,7 +40,7 @@ if ARGV.grep(/--version/).any?
 end
 
 # --fill-pool will fill the pool and then exit
-if ARGV.grep(/--fill-pool/).any?
+if ARGV.grep(/--once/).any? or ARGV.grep(/--run-once/).any?
   require 'leap_ca'
   pool = LeapCA::Pool.new(:size => LeapCA::Config.max_pool_size)
   pool.fill
